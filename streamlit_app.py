@@ -1,40 +1,35 @@
-import json
-from openai import OpenAI
+import streamlit as st
 
-client = OpenAI(
-    api_key = "YOUR_API_KEY_GOES_HERE_IM_NOT_SHARING_MINE"
-)
+"""
+# Hello World, Streamlit!
 
-# 1
-system_prompt = """
-You are a type writer. You start off with an empty string. Whenever a user gives you a word, you add
-it to the string. Always return back what the string looks like.
+This is a website to demonstrate Streamlit's API.
+You can stop looking at this now.
+
+Please.
 """
 
-# 2
-chat_history = [
-    {"role": "system", "content": system_prompt},
-]
-
-# 3
-while True:
-    user_prompt = input("What do you want to ask? ")
-    
-    # 4
-    chat_history.append(
-        {"role": "user", "content": user_prompt},
+with st.form("my_form"):
+    fav_color = st.selectbox(
+        "What's your favorite color?",
+        [
+            "Red",
+            "Orange",
+            "Yellow",
+            "Green",
+            "Blue",
+            "Purple"
+        ]
     )
     
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages = chat_history
-    )
+    reason = st.text_area("Talk about why that's your favorite color.")
 
-    assistant_response = response.choices[0].message.content
-    print(assistant_response)
-    print()
-
-    # 5
-    chat_history.append(
-        {"role": "assistant", "content": assistant_response}
-    )
+    submitted = st.form_submit_button("Submit")
+    if submitted:
+        st.write("It's interesting that you like " + fav_color + ".")
+        st.write("Your say it's because:")
+        st.write("""
+        ```
+        reason
+        ```
+        """.replace("reason", reason))
